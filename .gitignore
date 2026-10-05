@@ -1,0 +1,8 @@
+build/
+.gradle/
+.idea/
+*.iml
+.kotlin/
+
+# Private working notes: server address, key locations. Never published.
+HANDOFF.md
