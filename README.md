@@ -29,7 +29,7 @@ None of this is legal advice.
 ## The contract
 
 One file: [`MusicSource.kt`](api/src/commonMain/kotlin/org/bgdynamix/spinet/extension/MusicSource.kt).
-Six methods, four of them optional.
+Two methods are required; everything else is optional.
 
 ```kotlin
 interface MusicSource {
@@ -44,8 +44,17 @@ interface MusicSource {
     suspend fun track(trackId: String): SourceTrack? = null
     suspend fun open(url: String): SourceTrack? = null
     suspend fun resolveForDownload(trackId: String): StreamLink? = resolve(trackId)
+    suspend fun searchVersions(query: String): List<SourceTrack> = search(query, 1)
+    suspend fun openPlaylist(url: String): SourcePlaylist? = null
+    val canRecognize: Boolean get() = false
+    suspend fun recognize(pcm: ShortArray, sampleRate: Int): SourceTrack? = null
+    val settings: List<SettingField> get() = emptyList()
+    fun applySettings(values: Map<String, String>) {}
 }
 ```
+
+Everything after `resolve` has a body. A source implements only what it does —
+a playlist importer can leave search, resolve and the rest alone.
 
 It has no dependencies on purpose. Every extension ever built compiles against
 this file, so anything added to it has to be carried forever.

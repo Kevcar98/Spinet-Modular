@@ -85,7 +85,75 @@ interface MusicSource {
      * [StreamLink.downloadable] says so. Defaults to [resolve].
      */
     suspend fun resolveForDownload(trackId: String): StreamLink? = resolve(trackId)
+
+    // ---- Added after api 1 shipped. Every one has a body, so an extension
+    // ---- built before it still loads, and an app built before it never calls it.
+
+    /**
+     * Broader results for the same query, for picking a different version of a
+     * song — a live take, a remix. Defaults to [search].
+     */
+    suspend fun searchVersions(query: String): List<SourceTrack> = search(query, 1)
+
+    /**
+     * A pasted link to a playlist, if this source knows it.
+     *
+     * Null means "not mine". When [SourcePlaylist.playable] is false the tracks
+     * are only names — the app looks each one up in the user's other sources,
+     * the way it imports a CSV file.
+     */
+    suspend fun openPlaylist(url: String): SourcePlaylist? = null
+
+    /**
+     * Whether [recognize] does anything. The app offers its listen button only
+     * when a switched-on source says yes.
+     */
+    val canRecognize: Boolean get() = false
+
+    /**
+     * Name the song in a short recording: 16-bit mono PCM at [sampleRate].
+     * Null when nothing matched. The app records; the source decides how to
+     * identify — the app knows nothing about that.
+     */
+    suspend fun recognize(pcm: ShortArray, sampleRate: Int): SourceTrack? = null
+
+    /**
+     * Settings the user fills in for this source — an address, a key. The app
+     * shows them under the source, stores the values, and hands them back
+     * through [applySettings].
+     */
+    val settings: List<SettingField> get() = emptyList()
+
+    /**
+     * The user's values for [settings], keyed by [SettingField.key]. Called
+     * once after loading and again whenever the user saves. A key the user has
+     * never filled in is absent.
+     */
+    fun applySettings(values: Map<String, String>) {}
 }
+
+/** A playlist a source opened from a link. */
+data class SourcePlaylist(
+    val name: String,
+    val tracks: List<SourceTrack>,
+    /**
+     * Whether the tracks play through this same source. False when the source
+     * only knows the names — then the app matches them against the user's
+     * other sources.
+     */
+    val playable: Boolean = true
+)
+
+/** One setting a source asks the user for. */
+data class SettingField(
+    /** Stable: the stored value is found by it. */
+    val key: String,
+    val label: String,
+    /** Shown in the empty field as an example. */
+    val hint: String = "",
+    /** Typed into a password field and never shown again once saved. */
+    val secret: Boolean = false
+)
 
 /** What a source supports; anything absent is hidden rather than failing. */
 enum class Capability {
