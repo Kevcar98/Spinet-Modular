@@ -78,6 +78,12 @@ Things to know:
 - **Capabilities** say what your source can do: `SEARCH`, `BROWSE` (folders or
   playlists), `LOOKUP` (one track by id) and `DOWNLOAD`. The app hides
   anything you don't list.
+- **Other versions.** With `SEARCH` listed, your source is also used by the
+  "Other versions" window on every song, where people swap a track for a
+  different upload, remix or live recording, or type their own words to search
+  again. The app calls `searchVersions` for this. It runs your normal `search`
+  unless you override it, so only override it when your service has a better
+  way to find alternate versions, such as including videos as well as songs.
 - **Saving songs.** Only add `DOWNLOAD`, and only set
   `StreamLink.downloadable = true`, when the service allows its music to be
   saved. That decision is yours as the author, because you know the terms the
