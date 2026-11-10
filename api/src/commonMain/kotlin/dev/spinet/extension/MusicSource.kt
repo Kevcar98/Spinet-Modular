@@ -19,6 +19,8 @@ interface MusicSource {
 
     suspend fun browseTracks(parentId: String): List<SourceTrack> = emptyList()
 
+    suspend fun searchPlaylists(query: String): List<SourceItem> = emptyList()
+
     suspend fun track(trackId: String): SourceTrack? = null
 
     suspend fun open(url: String): SourceTrack? = null

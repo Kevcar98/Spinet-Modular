@@ -98,6 +98,10 @@ Things to know:
   `queue_music`, `radio`, `sentiment_dissatisfied`,
   `sentiment_very_satisfied`, `spa`, `speaker`, `sports_esports`, `stars`,
   `wb_sunny`, `whatshot`.
+- **Playlists in search.** Return playlists from `searchPlaylists(query)` as
+  folders (`isContainer = true`). They appear above the songs on the Search
+  screen, and opening one shows it in Explore, so `browseTracks(id)` must
+  accept their ids.
 - **Keep playing.** When the queue runs out, the app asks switched-on sources
   for songs like the last one through `related(trackId)`, and mixes what comes
   back with picks from the user's own library. It returns nothing unless you
