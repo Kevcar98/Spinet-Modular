@@ -84,6 +84,25 @@ Things to know:
   again. The app calls `searchVersions` for this. It runs your normal `search`
   unless you override it, so only override it when your service has a better
   way to find alternate versions, such as including videos as well as songs.
+- **Explore.** With `BROWSE` listed, your source gets its own entry in the
+  app's Explore tab. `browse(null)` returns the top level, such as charts,
+  genres or moods. Mark a folder with `isContainer = true`; opening it calls
+  `browse(id)` for any folders inside it and `browseTracks(id)` for its songs.
+  A folder's `artworkUrl` can be a picture link, or `icon:` followed by one of
+  the app's icon names, drawn in the user's theme colour: `album`, `bedtime`,
+  `bolt`, `celebration`, `center_focus_strong`, `church`, `directions_car`,
+  `edit`, `family_restroom`, `favorite`, `festival`, `fitness_center`,
+  `folder`, `graphic_eq`, `headphones`, `history`, `landscape`, `language`,
+  `leaderboard`, `library_music`, `local_cafe`, `mic`, `mood`, `movie`,
+  `music_note`, `new_releases`, `nightlife`, `park`, `piano`, `public`,
+  `queue_music`, `radio`, `sentiment_dissatisfied`,
+  `sentiment_very_satisfied`, `spa`, `speaker`, `sports_esports`, `stars`,
+  `wb_sunny`, `whatshot`.
+- **Keep playing.** When the queue runs out, the app asks switched-on sources
+  for songs like the last one through `related(trackId)`, and mixes what comes
+  back with picks from the user's own library. It returns nothing unless you
+  override it. For a song from another source, the app first finds it with
+  your `search`, then asks for `related` on the top result.
 - **Saving songs.** Only add `DOWNLOAD`, and only set
   `StreamLink.downloadable = true`, when the service allows its music to be
   saved. That decision is yours as the author, because you know the terms the
@@ -92,6 +111,13 @@ Things to know:
   them in `settings` as `SettingField`s. The app shows the fields, stores what
   the user types, and gives the values to `applySettings`. Mark passwords and
   keys with `secret = true`.
+- **Pick lists.** For a setting with a fixed set of answers, return them from
+  `settingChoices(key)` as `SourceItem`s. The app then shows a list to tick
+  instead of a text box, and stores the ticked ids joined by commas. Give an
+  item an `artworkUrl` to show a picture next to it.
+- **Settings in Explore.** Return setting keys from `folderSettings(folderId)`
+  and the app puts a settings button in that folder's header, showing just
+  those settings. Explore reloads the folder after they are saved.
 
 The example in [`example-extension/`](../example-extension) uses every part of
 the contract and needs no network, so it is a good place to start from.

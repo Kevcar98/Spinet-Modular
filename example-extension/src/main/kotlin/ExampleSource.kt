@@ -51,10 +51,16 @@ class ExampleSource : MusicSource {
 
     override suspend fun browse(parentId: String?): List<SourceItem> =
         if (parentId == null) {
-            listOf(SourceItem(id = "all", name = "Everything", trackCount = catalogue.size))
+            listOf(SourceItem(id = "all", name = "Everything", trackCount = catalogue.size, isContainer = true))
         } else {
             emptyList()
         }
+
+    override suspend fun browseTracks(parentId: String): List<SourceTrack> =
+        if (parentId == "all") catalogue else emptyList()
+
+    override suspend fun related(trackId: String): List<SourceTrack> =
+        catalogue.filter { it.id != trackId }
 
     override suspend fun track(trackId: String): SourceTrack? =
         catalogue.firstOrNull { it.id == trackId }

@@ -17,6 +17,8 @@ interface MusicSource {
 
     suspend fun browse(parentId: String? = null): List<SourceItem> = emptyList()
 
+    suspend fun browseTracks(parentId: String): List<SourceTrack> = emptyList()
+
     suspend fun track(trackId: String): SourceTrack? = null
 
     suspend fun open(url: String): SourceTrack? = null
@@ -27,11 +29,17 @@ interface MusicSource {
 
     suspend fun openPlaylist(url: String): SourcePlaylist? = null
 
+    suspend fun related(trackId: String): List<SourceTrack> = emptyList()
+
     val canRecognize: Boolean get() = false
 
     suspend fun recognize(pcm: ShortArray, sampleRate: Int): SourceTrack? = null
 
     val settings: List<SettingField> get() = emptyList()
+
+    fun settingChoices(key: String): List<SourceItem> = emptyList()
+
+    fun folderSettings(folderId: String): List<String> = emptyList()
 
     fun applySettings(values: Map<String, String>) {}
 }
